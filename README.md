@@ -126,7 +126,7 @@ async function saveForm(data, target) {
 
 - `Transformers`:
   Array of transformer definitions:
-  ````ts
+  ```ts
   type Transformers<T extends object = object> = { 
   	format?: Format, direction?: Direction, transformer: Transformer<T>
   }[]
