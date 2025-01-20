@@ -18,14 +18,8 @@
 		"node": ">=18"
 	},
 	"exports": {
-		"import": {
-			"default": "./esm/transformer.js",
-			"types": "./esm/transforer.d.ts"
-		},
-		"require": {
-			"default": "./cjs/transformer.js",
-			"types": "./cjs/transformer.d.ts"
-		}
+		"import": "./esm/transformer.js",
+		"require": "./cjs/transformer.js"
 	},
 	"files": [
 		"LICENSE",
@@ -55,5 +49,6 @@
 		"build:cjs": "tsc -p tsconfig.cjs.json",
 		"build:esm": "tsc -p tsconfig.esm.json && node esm/esm"
 	},
-	"version": "0.0.2"
+	"types": "./esm/transformer.d.ts",
+	"version": "0.0.3"
 }
