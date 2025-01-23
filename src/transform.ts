@@ -12,7 +12,7 @@ export function Transform<T extends object>(format: Format, direction: Direction
 export function Transform<T extends object>(
 	format: Format | Transformers<T>, direction?: Direction | Transformer<T> | false, transformer?: Transformer<T> | false
 ) {
-	if (typeof format !== 'string') {
+	if ((typeof format !== 'string') && (typeof format !== 'symbol')) {
 		return (target: T, property: KeyOf<T>) =>
 			setPropertyTransformers(target, property, format)
 	}
