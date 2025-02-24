@@ -23,6 +23,8 @@ export const SQL  = 'sql'
 export type Direction = 'edit' | 'input' | 'output' | 'read' | 'save' | string | symbol | ''
 export type Format    = 'html' | 'json' | 'sql' | string | symbol | ''
 
+export const IGNORE = '¤~!~!~!~!~¤'
+
 export { Transform }
 export default Transform
 
