@@ -95,6 +95,7 @@ async function saveForm(data, target) {
 - `READ`:   Used when reading data from an external source.
 - `SAVE`:   Indicates transformations used for saving data.
 - `HTML`, `JSON`, `SQL`: Constants representing specific data formats.
+- [IGNORE](#ignoring-a-transformation-result): A constant to allow transformers to skip results.
 
 ### Types
 
@@ -274,5 +275,23 @@ class User
 		{ format: HTML, direction: INPUT, transformer: value => value.length ? 'hashed-value' : '' }
 	])
 	password: string
+}
+```
+
+### Ignoring a Transformation Result
+
+If a transformer should explicitly indicate that a transformation result must be ignored,
+it can return the `IGNORE` [constant](#constants).
+The transformation process will then proceed as if the transformer had not been applied.
+
+**Example:**
+```ts
+import { IGNORE } from '@itrocks/transformer'
+
+function myTransformer(value: any)
+{
+	return shouldIgnore(value)
+		? IGNORE
+		: process(value)
 }
 ```
