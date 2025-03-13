@@ -60,7 +60,7 @@ export async function applyTransformer<T extends object>(
 						|| false
 					)
 					: false
-			) satisfies unknown as (Transformer<T> | false)
+			) as (Transformer<T> | false)
 		)
 	}
 	const formatTransformer = formatTransformers.get(format)
