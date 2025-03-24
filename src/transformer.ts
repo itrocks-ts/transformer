@@ -5,7 +5,8 @@ import { Type, typeOf }       from '@itrocks/class-type'
 import { DecoratorOfType }    from '@itrocks/decorator/class'
 import { PrimitiveType }      from '@itrocks/property-type'
 import { ReflectProperty }    from '@itrocks/reflect'
-import { Transform }          from './transform'
+
+export { Transform } from './transform'
 
 const TRANSFORMERS = Symbol('transformers')
 
@@ -24,9 +25,6 @@ export type Direction = 'edit' | 'input' | 'output' | 'read' | 'save' | string |
 export type Format    = 'html' | 'json' | 'sql' | string | symbol | ''
 
 export const IGNORE = '¤~!~!~!~!~¤'
-
-export { Transform }
-export default Transform
 
 type PropertyType<PT extends object = object> = DecoratorOfType<PT> | PrimitiveType | Type<PT> | null
 
