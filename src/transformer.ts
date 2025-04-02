@@ -1,10 +1,14 @@
-import { isAnyObject, KeyOf } from '@itrocks/class-type'
-import { ObjectOrType }       from '@itrocks/class-type'
-import { prototypeOf }        from '@itrocks/class-type'
-import { Type, typeOf }       from '@itrocks/class-type'
-import { DecoratorOfType }    from '@itrocks/decorator/class'
-import { PrimitiveType }      from '@itrocks/property-type'
-import { ReflectProperty }    from '@itrocks/reflect'
+import { baseType }        from '@itrocks/class-type'
+import { isAnyObject }     from '@itrocks/class-type'
+import { isAnyType }       from '@itrocks/class-type'
+import { KeyOf }           from '@itrocks/class-type'
+import { ObjectOrType }    from '@itrocks/class-type'
+import { prototypeOf }     from '@itrocks/class-type'
+import { Type }            from '@itrocks/class-type'
+import { typeOf }          from '@itrocks/class-type'
+import { DecoratorOfType } from '@itrocks/decorator/class'
+import { PrimitiveType }   from '@itrocks/property-type'
+import { ReflectProperty } from '@itrocks/reflect'
 
 export { Transform } from './transform'
 
@@ -29,11 +33,11 @@ export const IGNORE = '¤~!~!~!~!~¤'
 type PropertyType<PT extends object = object> = DecoratorOfType<PT> | PrimitiveType | Type<PT> | null
 
 type DirectionTransformers<T extends object = object> = Record<Direction, Transformer<T>>
-type FormatTransformers<T extends object = object>    = Record<Format, DirectionTransformers<T>>
+type FormatTransformers   <T extends object = object> = Record<Format, DirectionTransformers<T>>
 const transformers = new Map<PropertyType, FormatTransformers>()
 
-export type FormatTransformer = (value: any, data: any) => any
-const formatTransformers = new Map<string | symbol, FormatTransformer>
+export type FormatTransformer  = (value: any, data: any) => any
+const       formatTransformers = new Map<string | symbol, FormatTransformer>
 
 export type Transformer<T extends object = object>
 	= (value: any, target: ObjectOrType<T>, property: KeyOf<T>, data: any, format: Format, direction: Direction) => any
@@ -44,11 +48,11 @@ export type Transformers<T extends object = object>
 export async function applyTransformer<T extends object>(
 	value: any, target: ObjectOrType<T>, property: KeyOf<T>, format: Format, direction: Direction, data?: any
 ) {
-	const object = prototypeOf(target)
+	const object      = prototypeOf(target)
 	let   transformer = getPropertyTransformer<T>(object, property, format, direction)
 	if (transformer === undefined) {
 		const propertyType = new ReflectProperty(target, property).type
-		transformer = setPropertyTransformer(
+		transformer        = setPropertyTransformer(
 			object, property, format, direction,
 			(
 				propertyType
@@ -62,7 +66,7 @@ export async function applyTransformer<T extends object>(
 		)
 	}
 	const formatTransformer = formatTransformers.get(format)
-	const result       = transformer ? await transformer(value, target, property, data, format, direction) : value
+	const result            = transformer ? await transformer(value, target, property, data, format, direction) : value
 	return (data && formatTransformer) ? formatTransformer(result, data) : result
 }
 
@@ -78,7 +82,9 @@ function getPropertyTransformer<T extends object>(object: T, property: KeyOf<T>,
 
 function getPropertyTypeTransformer(type: PropertyType, format: Format, direction: Direction)
 {
-	const formatTransformers = transformers.get(isAnyObject(type) ? typeOf(type) : type)
+	const formatTransformers = transformers.get(
+		isAnyObject(type) ? baseType(typeOf(type)) : isAnyType(type) ? baseType(type) : type
+	)
 	if (!formatTransformers) return
 	const directionTransformers = formatTransformers[format] ?? formatTransformers['']
 	if (!directionTransformers) return
@@ -98,7 +104,7 @@ export function setPropertyTransformer<T extends object>(
 	if (!propertyTransformers) {
 		Reflect.defineMetadata(TRANSFORMERS, propertyTransformers = {}, target, property)
 	}
-	let formatTransformers = propertyTransformers[format] ?? (propertyTransformers[format] = {})
+	let formatTransformers        = propertyTransformers[format] ?? (propertyTransformers[format] = {})
 	formatTransformers[direction] = transformer
 	return transformer
 }
@@ -120,7 +126,7 @@ export function setPropertyTypeTransformer<T extends object>(
 	if (!propertyTransformers) {
 		transformers.set(type, propertyTransformers = {})
 	}
-	let formatTransformers = propertyTransformers[format] ?? (propertyTransformers[format] = {})
+	let formatTransformers        = propertyTransformers[format] ?? (propertyTransformers[format] = {})
 	formatTransformers[direction] = transformer
 }
 
