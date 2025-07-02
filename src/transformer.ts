@@ -1,14 +1,14 @@
-import { baseType }          from '@itrocks/class-type'
-import { isAnyObject }       from '@itrocks/class-type'
-import { isAnyType }         from '@itrocks/class-type'
-import { KeyOf }             from '@itrocks/class-type'
-import { ObjectOrType }      from '@itrocks/class-type'
-import { prototypeOf }       from '@itrocks/class-type'
-import { Type }              from '@itrocks/class-type'
-import { typeOf }            from '@itrocks/class-type'
-import { DecoratorOfType }   from '@itrocks/decorator/class'
-import { PrimitiveTypeType } from '@itrocks/property-type'
-import { ReflectProperty }   from '@itrocks/reflect'
+import { baseType }        from '@itrocks/class-type'
+import { isAnyObject }     from '@itrocks/class-type'
+import { isAnyType }       from '@itrocks/class-type'
+import { KeyOf }           from '@itrocks/class-type'
+import { ObjectOrType }    from '@itrocks/class-type'
+import { prototypeOf }     from '@itrocks/class-type'
+import { Type }            from '@itrocks/class-type'
+import { typeOf }          from '@itrocks/class-type'
+import { DecoratorOfType } from '@itrocks/decorator/class'
+import { Canonical }       from '@itrocks/property-type'
+import { ReflectProperty } from '@itrocks/reflect'
 
 export { Transform } from './transform'
 
@@ -30,7 +30,7 @@ export type Format    = 'html' | 'json' | 'sql' | string | symbol | ''
 
 export const IGNORE = '¤~!~!~!~!~¤'
 
-type PropertyType<PT extends object = object> = DecoratorOfType<PT> | PrimitiveTypeType | Type<PT> | null
+type PropertyType<PT extends object = object> = Canonical | DecoratorOfType<PT> | Type<PT> | null
 
 type DirectionTransformers<T extends object = object> = Record<Direction, Transformer<T>>
 type FormatTransformers   <T extends object = object> = Record<Format, DirectionTransformers<T>>
