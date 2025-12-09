@@ -8,11 +8,11 @@
 		"@itrocks/decorator": "latest",
 		"@itrocks/property-type": "latest",
 		"@itrocks/reflect": "latest",
-		"typescript": "~5.8"
+		"typescript": "~5.9"
 	},
 	"description": "Transform property values dynamically, enabling data formatting for versatile use cases",
 	"devDependencies": {
-		"@types/node": "^22.10"
+		"@types/node": "^24.10"
 	},
 	"engines": {
 		"node": ">=18"
@@ -50,5 +50,5 @@
 		"build:esm": "tsc -p tsconfig.esm.json && node esm/esm"
 	},
 	"types": "./esm/transformer.d.ts",
-	"version": "0.0.12"
+	"version": "0.0.13"
 }
