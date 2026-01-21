@@ -1,14 +1,14 @@
-import { baseType }        from '@itrocks/class-type'
-import { isAnyObject }     from '@itrocks/class-type'
-import { isAnyType }       from '@itrocks/class-type'
-import { KeyOf }           from '@itrocks/class-type'
-import { ObjectOrType }    from '@itrocks/class-type'
-import { prototypeOf }     from '@itrocks/class-type'
-import { Type }            from '@itrocks/class-type'
-import { typeOf }          from '@itrocks/class-type'
-import { DecoratorOfType } from '@itrocks/decorator/class'
-import { Canonical }       from '@itrocks/property-type'
-import { ReflectProperty } from '@itrocks/reflect'
+import { baseType }          from '@itrocks/class-type'
+import { isAnyObject }       from '@itrocks/class-type'
+import { isAnyType }         from '@itrocks/class-type'
+import { KeyOf }             from '@itrocks/class-type'
+import { ObjectOrType }      from '@itrocks/class-type'
+import { prototypeTargetOf } from '@itrocks/class-type'
+import { Type }              from '@itrocks/class-type'
+import { typeOf }            from '@itrocks/class-type'
+import { DecoratorOfType }   from '@itrocks/decorator/class'
+import { Canonical }         from '@itrocks/property-type'
+import { ReflectProperty }   from '@itrocks/reflect'
 
 export { Transform } from './transform'
 
@@ -48,7 +48,7 @@ export type Transformers<T extends object = object>
 export async function applyTransformer<T extends object>(
 	value: any, target: ObjectOrType<T>, property: KeyOf<T>, format: Format, direction: Direction, data?: any
 ) {
-	const object      = prototypeOf(target)
+	const object      = prototypeTargetOf(target)
 	let   transformer = getPropertyTransformer<T>(object, property, format, direction)
 	if (transformer === undefined) {
 		const propertyType  = new ReflectProperty(target, property).type
@@ -100,7 +100,7 @@ export function setFormatTransformer(format: Format, transformer: FormatTransfor
 export function setPropertyTransformer<T extends object>(
 	target: ObjectOrType<T>, property: KeyOf<T>, format: Format, direction: Direction, transformer: Transformer<T> | false
 ) {
-	target = prototypeOf(target)
+	target = prototypeTargetOf(target)
 	let propertyTransformers = Reflect.getMetadata(TRANSFORMERS, target, property)
 	if (!propertyTransformers) {
 		Reflect.defineMetadata(TRANSFORMERS, propertyTransformers = {}, target, property)
