@@ -101,11 +101,13 @@ export function setFormatTransformer(format: Format, transformer: FormatTransfor
 }
 
 export function setPropertyTransformer<T extends object>(
-	target: T, property: Meta<T>, format: Format, direction: Direction, transformer: Transformer<T> | false
+	target: ObjectOrType<T>, property: keyof T, format: Format, direction: Direction, transformer: Transformer<T> | false
 ) {
-	let   propertyTransformers = Reflect.getMetadata(TRANSFORMERS, target, property)
+	const metadataName = metadataNameOf(property)
+	const targetObject = prototypeTargetOf(target)
+	let   propertyTransformers = Reflect.getMetadata(TRANSFORMERS, targetObject, metadataName)
 	if (!propertyTransformers) {
-		Reflect.defineMetadata(TRANSFORMERS, propertyTransformers = {}, target, property)
+		Reflect.defineMetadata(TRANSFORMERS, propertyTransformers = {}, targetObject, metadataName)
 	}
 	let formatTransformers        = propertyTransformers[format] ?? (propertyTransformers[format] = {})
 	formatTransformers[direction] = transformer
@@ -113,7 +115,7 @@ export function setPropertyTransformer<T extends object>(
 }
 
 export function setPropertyTransformers<T extends object>(
-	target: T, property: Meta<T>, transformers: Transformers<T>
+	target: ObjectOrType<T>, property: keyof T, transformers: Transformers<T>
 ) {
 	for (const transformer of transformers) {
 		setPropertyTransformer(
