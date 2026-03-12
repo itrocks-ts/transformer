@@ -1,12 +1,12 @@
 import { baseType }          from '@itrocks/class-type'
 import { isAnyObject }       from '@itrocks/class-type'
 import { isAnyType }         from '@itrocks/class-type'
-import { KeyOf }             from '@itrocks/class-type'
 import { ObjectOrType }      from '@itrocks/class-type'
 import { prototypeTargetOf } from '@itrocks/class-type'
 import { Type }              from '@itrocks/class-type'
 import { typeOf }            from '@itrocks/class-type'
 import { DecoratorOfType }   from '@itrocks/decorator/class'
+import { metadataNameOf }    from '@itrocks/decorator/property'
 import { Canonical }         from '@itrocks/property-type'
 import { ReflectProperty }   from '@itrocks/reflect'
 
@@ -30,6 +30,8 @@ export type Format    = 'html' | 'json' | 'sql' | string | symbol | ''
 
 export const IGNORE = '¤~!~!~!~!~¤'
 
+type Meta<T extends object> = Extract<keyof T, string | symbol>
+
 type PropertyType<PT extends object = object> = Canonical | DecoratorOfType<PT> | Type<PT> | null
 
 type DirectionTransformers<T extends object = object> = Record<Direction, Transformer<T>>
@@ -40,20 +42,21 @@ export type FormatTransformer  = (value: any, data: any) => any
 const       formatTransformers = new Map<string | symbol, FormatTransformer>
 
 export type Transformer<T extends object = object>
-	= (value: any, target: ObjectOrType<T>, property: KeyOf<T>, data: any, format: Format, direction: Direction) => any
+	= (value: any, target: ObjectOrType<T>, property: keyof T, data: any, format: Format, direction: Direction) => any
 
 export type Transformers<T extends object = object>
 	= { format?: Format, direction?: Direction, transformer: Transformer<T> }[]
 
 export async function applyTransformer<T extends object>(
-	value: any, target: ObjectOrType<T>, property: KeyOf<T>, format: Format, direction: Direction, data?: any
+	value: any, target: ObjectOrType<T>, property: keyof T, format: Format, direction: Direction, data?: any
 ) {
-	const object      = prototypeTargetOf(target)
-	let   transformer = getPropertyTransformer<T>(object, property, format, direction)
+	const metadataName = metadataNameOf(property)
+	const object       = prototypeTargetOf(target)
+	let   transformer  = getPropertyTransformer<T>(object, metadataName, format, direction)
 	if (transformer === undefined) {
 		const propertyType  = new ReflectProperty(target, property).type
 		transformer = setPropertyTransformer(
-			object, property, format, direction,
+			object, metadataName, format, direction,
 			(
 				propertyType
 					? (
@@ -71,7 +74,7 @@ export async function applyTransformer<T extends object>(
 	return (data && formatTransformer) ? formatTransformer(result, data) : result
 }
 
-function getPropertyTransformer<T extends object>(object: T, property: KeyOf<T>, format: Format, direction: Direction)
+function getPropertyTransformer<T extends object>(object: T, property: Meta<T>, format: Format, direction: Direction)
 	: Transformer<T> | false | undefined
 {
 	const formatTransformers = Reflect.getMetadata(TRANSFORMERS, object, property)
@@ -98,10 +101,9 @@ export function setFormatTransformer(format: Format, transformer: FormatTransfor
 }
 
 export function setPropertyTransformer<T extends object>(
-	target: ObjectOrType<T>, property: KeyOf<T>, format: Format, direction: Direction, transformer: Transformer<T> | false
+	target: T, property: Meta<T>, format: Format, direction: Direction, transformer: Transformer<T> | false
 ) {
-	target = prototypeTargetOf(target)
-	let propertyTransformers = Reflect.getMetadata(TRANSFORMERS, target, property)
+	let   propertyTransformers = Reflect.getMetadata(TRANSFORMERS, target, property)
 	if (!propertyTransformers) {
 		Reflect.defineMetadata(TRANSFORMERS, propertyTransformers = {}, target, property)
 	}
@@ -111,7 +113,7 @@ export function setPropertyTransformer<T extends object>(
 }
 
 export function setPropertyTransformers<T extends object>(
-	target: ObjectOrType<T>, property: KeyOf<T>, transformers: Transformers<T>
+	target: T, property: Meta<T>, transformers: Transformers<T>
 ) {
 	for (const transformer of transformers) {
 		setPropertyTransformer(
