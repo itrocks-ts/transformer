@@ -54,7 +54,7 @@ export async function applyTransformer<T extends object>(
 	const object       = prototypeTargetOf(target)
 	let   transformer  = getPropertyTransformer<T>(object, metadataName, format, direction)
 	if (transformer === undefined) {
-		const propertyType  = new ReflectProperty(target, property).type
+		const propertyType = new ReflectProperty(target, property).type
 		transformer = setPropertyTransformer(
 			object, metadataName, format, direction,
 			(
