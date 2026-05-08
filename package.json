@@ -8,25 +8,18 @@
 		"@itrocks/decorator": "latest",
 		"@itrocks/property-type": "latest",
 		"@itrocks/reflect": "latest",
-		"typescript": "~5.9"
+		"typescript": "^6.0"
 	},
 	"description": "Transform property values dynamically, enabling data formatting for versatile use cases",
-	"devDependencies": {
-		"@types/node": "^24.10"
-	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=24"
 	},
-	"exports": {
-		"import": "./esm/transformer.js",
-		"require": "./cjs/transformer.js"
-	},
+	"exports": "./cjs/transformer.js",
 	"files": [
 		"LICENSE",
 		"README.md",
-		"*/*.d.ts",
-		"*/*.js",
-		"!*/esm.*"
+		"cjs",
+		"!*.map"
 	],
 	"homepage": "https://it.rocks",
 	"keywords": [
@@ -45,10 +38,7 @@
 		"url": "git+https://github.com/itrocks-ts/transformer.git"
 	},
 	"scripts": {
-		"build": "npm run build:cjs && npm run build:esm",
-		"build:cjs": "tsc -p tsconfig.cjs.json",
-		"build:esm": "tsc -p tsconfig.esm.json && node esm/esm"
+		"build": "tsc"
 	},
-	"types": "./esm/transformer.d.ts",
-	"version": "0.2.1"
+	"version": "0.2.2"
 }
