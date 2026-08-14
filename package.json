@@ -8,7 +8,7 @@
 		"@itrocks/decorator": "latest",
 		"@itrocks/property-type": "latest",
 		"@itrocks/reflect": "latest",
-		"typescript": "^6.0"
+		"typescript": "^7.0"
 	},
 	"description": "Transform property values dynamically, enabling data formatting for versatile use cases",
 	"engines": {
@@ -40,5 +40,5 @@
 	"scripts": {
 		"build": "tsc"
 	},
-	"version": "0.2.2"
+	"version": "0.2.3"
 }
